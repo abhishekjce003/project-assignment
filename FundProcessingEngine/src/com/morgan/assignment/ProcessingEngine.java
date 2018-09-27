@@ -20,7 +20,7 @@ public class ProcessingEngine {
 	
 	public static void processApprovalForFundRequest(String rule, FundRequest request){
 		ApprovalEntity entity = new ApprovalEntity(request);
-		ExecutorService es = Executors.newFixedThreadPool(4);
+		ExecutorService es = Executors.newFixedThreadPool(RuleConstants.NUMBER_OF_APPROVALS);
 		CountDownLatch cdl;
 		List<Callable<Boolean>> taskList = new ArrayList<Callable<Boolean>>();
 		String[] jobs = rule.split(RuleConstants.then);
@@ -63,9 +63,12 @@ public class ProcessingEngine {
 		FundRequest req = new FundRequest(1);
 		//the rule is configurable with parallel approval separated by #
 		//and sequential approval(s) separated by comma
+		
+		//the below mentioned rule depicts (Research Analyst Approval, Fund Manager Approval)-->(Division Head Approval)-->(Operations Approval)
 		String rule = RuleConstants.RESEARCH_ANALYST_APPROVAL+RuleConstants.paralle_with+RuleConstants.FUND_MANAGER_APPROVAL+RuleConstants.then+
 						RuleConstants.DIVISION_HEAD_APPROVAL+RuleConstants.then+
 						RuleConstants.OPERATIONS_APPROVAL;
+		
 		ProcessingEngine.processApprovalForFundRequest(rule, req);
 	}
 }
